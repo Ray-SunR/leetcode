@@ -1,92 +1,83 @@
 #include <iostream>
 #include <vector>
 
-int pivot(std::vector<int>& a, int pivotVal, int inda, int indb)
-{
-    while (inda < indb)
+using namespace std;
+
+#define trn_int_min 0xffffffffffffffff
+#define trn_int_max 0x7fffffffffffffff
+class Solution {
+public:
+    double findMedianSortedArrays(const vector<int>& v1, const vector<int>& v2) 
     {
-        while (a[inda] < pivotVal){inda++;}
-        while (a[indb] >= pivotVal){indb--;}
-        if (inda < indb)
+        int size1 = v1.size();
+        int size2 = v2.size();
+        if (size2 < size1) { return findMedianSortedArrays(v2, v1); }
+
+        int low = 0; int high = size1 * 2;
+        while (low <= high)
         {
-            int tmp = a[inda];
-            a[inda] = a[indb];
-            a[indb] = tmp;
+            int cut1 = low + (high - low) / 2;
+            int cut2 = size1 + size2 - cut1;
+
+            int l1 = (cut1 == 0 ? INT_MIN : v1[(cut1 - 1) / 2]);
+            int r1 = (cut1 == 2 * size1 ? INT_MAX : v1[cut1 / 2]);
+            int l2 = (cut2 == 0 ? INT_MIN : v2[(cut2 - 1) / 2]);
+            int r2 = (cut2 == 2 * size2 ? INT_MAX : v2[cut2 / 2]);
+
+            if (l1 > r2)
+            {
+                // go left in v1
+                high = cut1 - 1;
+            }
+            else if (l2 > r1)
+            {
+                // go right in v1
+                low = cut1 + 1;
+            }
+            else 
+            {
+                return (max(l1, l2) + min(r1, r2)) / 2.0;
+            }
         }
+
+        // Impossible
+        return -1;
     }
-    a[inda] = pivotVal;
-    return inda;
-}
 
-void qsort(std::vector<int>& a, int low, int high)
-{
-    int pivotVal = a[low];
-    int dividePos = pivot(a, pivotVal, low, high);
+private:
 
-#if 1
-    std::cout << " low: " << low;
-    std::cout << " pivotVal: " << pivotVal;
-    std::cout << " dividePos: " << dividePos << std::endl;
-#endif
-
-    if (dividePos - 1 > low)
+    int max(int val1, int val2)
     {
-        qsort(a, low, dividePos - 1);
+        return val1 > val2 ? val1 : val2;
     }
 
-    if (dividePos + 1 < high)
+    int min(int val1, int val2)
     {
-        qsort(a, dividePos + 1, high);
+        return val1 < val2 ? val1 : val2;
     }
-}
-
-void print(const std::vector<int>& vec)
-{
-    for (int i = 0;i < vec.size(); i++)
+    void Print(const vector<int>& vec)
     {
-        std::cout << vec[i] << " ";
+        for (int i = 0;i < vec.size(); i++)
+        {
+            cout << vec[i] << " " << endl;
+        }
+
+        cout << endl;
     }
-    std::cout << std::endl;
-}
-
-int median(std::vector<int>& a, int low, int high)
-{
-    int pivotVal = a[low];
-    int dividePos = pivot(a, pivotVal, low, high);
-
-    if (dividePos == a.size() / 2)
-    {
-        return a[dividePos];
-    }
-
-#if 1
-    std::cout << " low: " << low;
-    std::cout << " pivotVal: " << pivotVal;
-    std::cout << " dividePos: " << dividePos << std::endl;
-#endif
-
-    int result1,result2;
-    if (dividePos - 1 > low)
-    {
-        result1 = median(a, low, dividePos - 1);
-    }
-
-    if (dividePos + 1 < high)
-    {
-        result2 = median(a, dividePos + 1, high);
-    }
-    return result1 == -1 ? result2 : result1;
-}
+};
 
 int main(void)
 {
-    int a[] = {4, 0,12,143,4356,57,56,4,5,9,1,2,7,6};
-    std::vector<int> vec(a, a + sizeof(a)/sizeof(a[0]));
-    
-    print(vec); 
-    qsort(vec, 0, vec.size() - 1);
-    print(vec);
+    //cout << (int)trn_int_max << endl;
+    //cout << (int)trn_int_min << endl;
+    vector<int> v1;
+    vector<int> v2;
+    v1.push_back(2);
 
-    std::cout << "Median: " << median(vec, 0, vec.size() - 1) << std::endl;
+    v2.push_back(1);
+    v2.push_back(3);
+    v2.push_back(4);
+    Solution s;
+    cout << "Result is: " << s.findMedianSortedArrays(v1, v2) << endl;
     return 0;
 }
