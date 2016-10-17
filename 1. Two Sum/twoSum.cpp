@@ -20,38 +20,20 @@ class Solution {
 public:
 	vector<int> twoSum(const vector<int>& nums, int target)
 	{
-		map<int, int> helper;
+		map<int, int> hash;
 		vector<int> ret;
 		for (int i = 0;i < nums.size(); i++)
 		{
-			map<int, int>::const_iterator it = helper.find(target - nums[i]);
-			if (it != helper.end() && nums[it->second] + nums[i] == target)
+			map<int, int>::const_iterator it = hash.find(target - nums[i]);
+			if (it != hash.end())
 			{
-				if (it->second < i)
-				{
-					ret.push_back(it->second);
-					ret.push_back(i);
-				}
+				ret.push_back(it->second);
+				ret.push_back(i);
 			}
 			else
 			{
-				helper[target - nums[i]] = i;
+				hash[nums[i]] = i;
 			}
-		}
-
-		map<int, int>::const_iterator it = helper.begin();
-		while (it != helper.end())
-		{
-			map<int, int>::const_iterator jt = helper.find(target - it->first);
-			if (jt != helper.end())
-			{
-				if (it->second < jt->second)
-				{
-					ret.push_back(it->second);
-					ret.push_back(jt->second);
-				}
-			}
-			++it;
 		}
 		return ret;
 	}
