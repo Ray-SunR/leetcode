@@ -13,7 +13,7 @@ int Partition(vector<int>& v, int left, int right)
 	int j = right;
 	while (i <= j)
 	{
-		while (i <= j && v[i] <= save) { i++; }
+		while (i <= j && v[i] < save) { i++; }
 		if (i <= j)
 		{
 			v[pivot] = v[i];
