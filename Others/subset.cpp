@@ -35,7 +35,7 @@ vector<string> Subsets(const string& str)
 
 int main(void)
 {
-	string str = "abcd";
+	string str = "abcdefg";
 	vector<string> numbers = Subsets(str);
 	for (int i = 0; i < numbers.size(); i++)
 	{

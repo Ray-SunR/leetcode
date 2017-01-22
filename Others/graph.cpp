@@ -12,11 +12,13 @@ using namespace std;
 
 struct Edge
 {
-	Edge(int dest, int weight)
+	Edge(int start, int dest, int weight)
 	: m_dest(dest)
+	, m_start(start)
 	, m_weight(weight){}
 	int m_weight;
 	int m_dest;
+	int m_start;
 };
 
 class Graph
@@ -26,7 +28,7 @@ public:
 	void BreadFirstSearch(std::vector<int>& ret) const;
 	void DepthFirstSearch(std::vector<int>& ret) const;
 	void TopologicalSort(std::vector<int>& ret) const;
-	void MST_Kruscal(std::vector<int>& ret) const;
+	void MST_Kruscal(std::vector<Edge>& ret) const;
 	void MST_Prim(std::vector<int>& ret) const;
 	bool HasCycleDFS() const; 
 	bool HasCycleUnionFind() const;
@@ -99,8 +101,39 @@ void Graph::TopologicalSort(std::vector<int>& ret) const
 	}
 }
 
-void Graph::MST_Kruscal(std::vector<int>& ret) const
+bool EdgeLess(const Edge& a, const Edge& b)
 {
+	return a.m_weight < b.m_weight;
+}
+
+void Graph::MST_Kruscal(std::vector<Edge>& ret) const
+{
+	map<int, vector<Edge> >::const_iterator it = m_data.begin();
+	vector<Edge> all_edges;
+	while (it != m_data.end())
+	{
+		all_edges.insert(all_edges.end(), it->second.begin(), it->second.end());
+		++it;
+	}
+
+	std::sort(all_edges.begin(), all_edges.end(), EdgeLess);
+	UF unionfind(m_data.size());
+	int idx = 0;
+	int edge_idx = 0;
+	// n - 1 edges
+	while (idx < m_data.size() - 1 && edge_idx < all_edges.size())
+	{
+		const Edge& pick = all_edges[edge_idx++];
+		int roota = unionfind.Find(pick.m_start);
+		int rootb = unionfind.Find(pick.m_dest);
+		if (roota != rootb)
+		{
+			ret.push_back(pick);
+			unionfind.Union(roota, rootb);
+		}
+	}
+
+	if (idx < m_data.size() - 1) { cout << "Doesn't exist!" << endl; }
 	return;
 }
 
@@ -130,7 +163,7 @@ bool Graph::HasCycleUnionFind() const
 
 void Graph::AddEdge(int u, int v, int weight)
 {
-	m_data[u].push_back(Edge(v, weight));
+	m_data[u].push_back(Edge(u, v, weight));
 	if (m_data.find(v) == m_data.end())
 	{
 		m_data[v];
@@ -251,5 +284,18 @@ int main(void)
 	if (g2.HasCycleUnionFind())
 	{
 		cout << "Has cycle" << endl;
+	}
+
+	Graph g3;
+	g3.AddEdge(0, 1, 10);
+	g3.AddEdge(0, 2, 6);
+	g3.AddEdge(0, 3, 5);
+	g3.AddEdge(1, 3, 15);
+	g3.AddEdge(2, 3, 4);
+	std::vector<Edge> mst;
+	g3.MST_Kruscal(mst);
+	for (int i = 0; i < mst.size(); i++)
+	{
+		cout << "Edge " << i + 1 << "(" << mst[i].m_start << ", " << mst[i].m_dest << ")" << endl;
 	}
 }

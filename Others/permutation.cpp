@@ -26,7 +26,7 @@ vector<string> Permutations(const string& str)
 
 int main(void)
 {
-	string str = "abcdeefghijk";
+	string str = "abc";
 
 	vector<string> ret = Permutations(str);
 	cout << "size: " << ret.size() << endl;
