@@ -1,4 +1,4 @@
-class Solution {
+class Solution { 
     private List<String> generate(final Character c, final List<String> combinations) {
         final List<String> KEYBOARD_2 = new ArrayList<String>() {{
         add(""); add("abc"); add("def"); add("ghi"); add("jkl"); add("mno"); add("pqrs"); add("tuv"); add("wxyz");
