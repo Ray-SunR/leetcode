@@ -1,4 +1,4 @@
-# Find a path that explores all edges starting from JFK
+ # Find a path that explores all edges starting from JFK
 class Solution:
     def findItinerary(self, tickets: List[List[str]]) -> List[str]:
         graph = {}
