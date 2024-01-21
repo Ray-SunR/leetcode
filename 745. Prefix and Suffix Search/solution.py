@@ -42,7 +42,7 @@ class WordFilter:
     # find all words starting with this node
     def find_all_words(self, node, res):
         if node.is_word:
-            heapq.heappush(res, (-node.index, node.c))
+            res.add(-node.index)
         for c in node.children:
             self.find_all_words(node.children[c], res)
 
@@ -52,7 +52,7 @@ class WordFilter:
             if c not in node.children:
                 return -1
             node = node.children[c]
-        res = []
+        res = set()
         self.find_all_words(node, res)
         if not res:
             return -1
@@ -66,13 +66,13 @@ class WordFilter:
             suffix_res = self.find(suff[::-1], self.suffix_trie)
             if suffix_res == -1:
                 return -1
-            prefix_res = sorted(prefix_res, key=lambda x: x[0])
-            suffix_res = sorted(suffix_res, key=lambda x: x[0])
-
-            for prefix_ele in prefix_res:
-                if prefix_ele in suffix_res:
-                    return -prefix_ele[0]
-            return -1
+            # print(prefix_res)
+            # print(suffix_res)
+            intersection_res = sorted(list(prefix_res.intersection(suffix_res)))
+            # print(intersection_res)
+            if not intersection_res:
+                return -1
+            return -intersection_res[0]
         else:
             return -1
 
